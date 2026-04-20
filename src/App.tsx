@@ -4,6 +4,10 @@ import {
   LinkIcon,
   ClipboardDocumentIcon,
   ClockIcon,
+  CheckCircleIcon,
+  ShieldCheckIcon,
+  SparklesIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 
 const DISCORD_CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID || '';
@@ -61,13 +65,6 @@ type PendingLink = {
   minecraftUuid: string;
   state: string;
   createdAt: number;
-};
-
-type WaterDrop = {
-  left: string;
-  delay: string;
-  duration: string;
-  height: string;
 };
 
 function isLinkResult(value: Partial<LinkResult> | null): value is LinkResult {
@@ -141,44 +138,32 @@ function DiscordIcon({ className }: SVGProps<SVGSVGElement>) {
   );
 }
 
-function BackgroundScene() {
-  const drops: WaterDrop[] = [
-    { left: '8%', delay: '0s', duration: '5.6s', height: '4.25rem' },
-    { left: '15%', delay: '1.4s', duration: '6.4s', height: '3rem' },
-    { left: '24%', delay: '2.8s', duration: '5.9s', height: '4.75rem' },
-    { left: '34%', delay: '0.8s', duration: '6.8s', height: '3.5rem' },
-    { left: '45%', delay: '3.3s', duration: '5.7s', height: '4rem' },
-    { left: '56%', delay: '1.9s', duration: '6.6s', height: '3.25rem' },
-    { left: '67%', delay: '0.4s', duration: '6.1s', height: '4.5rem' },
-    { left: '76%', delay: '3.9s', duration: '5.8s', height: '3.75rem' },
-    { left: '84%', delay: '2.2s', duration: '6.9s', height: '4.25rem' },
-    { left: '93%', delay: '1.1s', duration: '6.2s', height: '3rem' },
-    { left: '5%', delay: '4.4s', duration: '5.4s', height: '2.75rem' },
-    { left: '31%', delay: '5.1s', duration: '6.3s', height: '3.75rem' },
-    { left: '61%', delay: '4.7s', duration: '5.5s', height: '2.9rem' },
-    { left: '88%', delay: '5.6s', duration: '6.7s', height: '3.6rem' },
-  ];
-
+function MinecraftBlockIcon({ className }: SVGProps<SVGSVGElement>) {
   return (
-    <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden bg-[#101114]">
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,#15171c_0%,#101114_42%,#0b0d10_100%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.08),transparent_34%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.03),transparent_24%,transparent_76%,rgba(255,255,255,0.025))]" />
-      <div className="absolute inset-0 opacity-[0.035] [background-image:linear-gradient(115deg,transparent_0%,transparent_48%,white_48%,white_48.4%,transparent_48.4%,transparent_100%)] [background-size:18rem_18rem]" />
-      <div className="absolute inset-0 opacity-85">
-        {drops.map((drop) => (
-          <span
-            className="water-drop absolute top-[-6rem] w-[2px] rounded-full bg-gradient-to-b from-sky-300/0 via-sky-400/85 to-cyan-200/0 shadow-[0_0_12px_rgba(56,189,248,0.32)]"
-            key={`${drop.left}-${drop.delay}`}
-            style={{
-              animationDelay: drop.delay,
-              animationDuration: drop.duration,
-              height: drop.height,
-              left: drop.left,
-            }}
-          />
-        ))}
-      </div>
+    <svg
+      aria-hidden="true"
+      className={className}
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill="currentColor"
+        d="M12 1.5 2.5 6v12L12 22.5 21.5 18V6L12 1.5Zm0 2.236 7.4 3.505L12 10.747 4.6 7.241 12 3.736ZM3.75 8.48 11.375 12v8.33L3.75 16.81V8.48Zm8.875 11.85V12l7.625-3.52v8.33l-7.625 3.52Z"
+      />
+    </svg>
+  );
+}
+
+function BackgroundScene() {
+  return (
+    <div aria-hidden="true" className="absolute inset-0 -z-10 overflow-hidden bg-[#07090f]">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(7,152,242,0.18),transparent_55%),radial-gradient(ellipse_at_bottom,_rgba(88,101,242,0.14),transparent_55%)]" />
+      <div className="aurora-blob aurora-blob-1" />
+      <div className="aurora-blob aurora-blob-2" />
+      <div className="aurora-blob aurora-blob-3" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_80%)]" />
+      <div className="absolute inset-0 opacity-40 [background:radial-gradient(1px_1px_at_20%_30%,#fff_50%,transparent_50%),radial-gradient(1px_1px_at_70%_20%,#fff_50%,transparent_50%),radial-gradient(1.5px_1.5px_at_40%_80%,#fff_50%,transparent_50%),radial-gradient(1px_1px_at_85%_65%,#fff_50%,transparent_50%),radial-gradient(1px_1px_at_10%_75%,#fff_50%,transparent_50%),radial-gradient(1.5px_1.5px_at_55%_45%,#fff_50%,transparent_50%)] animate-[twinkle_4s_ease-in-out_infinite]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
     </div>
   );
 }
@@ -238,6 +223,8 @@ function App() {
   const timeLeft = linkResult ? linkResult.expiresAt - now : 0;
   const isExpired = Boolean(linkResult && timeLeft <= 0);
   const previewName = minecraftName.trim();
+  const isNameValid = MINECRAFT_NAME_PATTERN.test(previewName);
+  const displayName = isNameValid ? previewName : DEFAULT_MINECRAFT_NAME;
   const previewHeadUrl = getPlayerHeadUrl(minecraftUuid);
   const linkedHeadUrl = getPlayerHeadUrl(linkResult?.minecraftUuid || DEFAULT_MINECRAFT_UUID);
 
@@ -438,74 +425,147 @@ function App() {
     }, 220);
   }
 
+  const isBusy = status === 'resolving' || status === 'authenticating';
+
   return (
-    <main className="min-h-screen overflow-hidden bg-[#0d1017] text-white">
-      <section className="relative isolate flex min-h-screen items-center px-5 py-8 sm:px-8 lg:px-12">
-        <BackgroundScene />
+    <main className="relative min-h-screen overflow-hidden bg-[#07090f] text-white">
+      <BackgroundScene />
 
-        <div className="mx-auto flex w-full max-w-md items-center justify-center">
-          <div className="w-full rounded-lg border border-white/10 bg-white/[0.08] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.34)] backdrop-blur md:p-7">
-            <form onSubmit={startDiscordLogin}>
-                <div className="flex items-center gap-4">
-                  <img
-                    className="h-16 w-16 rounded-md border border-white/10 bg-slate-950 object-cover shadow-[0_10px_24px_rgba(0,0,0,0.28)]"
-                    src={previewHeadUrl}
-                    alt={`${MINECRAFT_NAME_PATTERN.test(previewName) ? previewName : DEFAULT_MINECRAFT_NAME} Minecraft head`}
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl flex-col items-center justify-center px-5 py-10 sm:px-8 lg:px-12">
+        <section className="flex w-full flex-col items-center">
+          <div className="flex flex-col items-center text-center">
+            <h1 className="max-w-2xl text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl">
+              Koppel je{' '}
+              <span className="bg-gradient-to-r from-emerald-300 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
+                Minecraft
+              </span>{' '}
+              aan{' '}
+              <span className="bg-gradient-to-r from-[#8a94ff] via-[#5865F2] to-[#7a86ff] bg-clip-text text-transparent">
+                Discord
+              </span>
+            </h1>
+          </div>
+
+          <div className="relative mt-8 w-full max-w-xl">
+            <div className="pointer-events-none absolute -inset-px rounded-2xl bg-gradient-to-br from-venox-400/50 via-white/5 to-[#5865F2]/40 opacity-60 blur-[2px]" />
+            <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] backdrop-blur-xl sm:p-8">
+              <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div
+                    className={`absolute -inset-1 rounded-xl bg-gradient-to-br from-emerald-400/40 to-venox-400/30 blur-md transition-opacity duration-500 ${
+                      isNameValid ? 'opacity-100' : 'opacity-0'
+                    }`}
                   />
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-normal text-venox-200">
-                      Start koppelen
-                    </p>
-                    <h2 className="mt-1 text-2xl font-bold text-white">Account Link</h2>
-                  </div>
+                  <img
+                    className="relative h-16 w-16 rounded-xl border border-white/15 bg-slate-950 object-cover shadow-[0_10px_30px_rgba(0,0,0,0.45)]"
+                    src={previewHeadUrl}
+                    alt={`${displayName} Minecraft head`}
+                  />
+                  <span
+                    className={`absolute -bottom-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full border-2 border-[#0b0e15] transition ${
+                      isNameValid
+                        ? 'bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.65)]'
+                        : 'bg-slate-600'
+                    }`}
+                  >
+                    {isNameValid ? (
+                      <CheckCircleIcon className="h-3.5 w-3.5 text-[#0b0e15]" />
+                    ) : (
+                      <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                    )}
+                  </span>
                 </div>
-
-                <div className="mt-7 rounded-md border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-300">
-                  <h3 className="text-base font-bold text-venox-200">Hoe te verifieren:</h3>
-                  <ol className="mt-3 space-y-2 font-semibold">
-                    <li>1. Vul je Minecraft naam in.</li>
-                    <li>2. Klik op Link met Discord.</li>
-                    <li>3. Login met je Discord account.</li>
-                    <li>
-                      4. Gebruik{' '}
-                      <code className="rounded bg-slate-950 px-2 py-1 text-venox-100">/link &lt;code&gt;</code>{' '}
-                      op de server.
-                    </li>
-                  </ol>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-venox-300">
+                    Speler voorbeeld
+                  </p>
+                  <p className="mt-0.5 truncate text-xl font-bold text-white">{displayName}</p>
+                  <p className="mt-0.5 truncate font-mono text-[11px] text-slate-500">
+                    {isNameValid ? minecraftUuid : 'vul je naam in om te bevestigen'}
+                  </p>
                 </div>
+              </div>
 
-                <label className="mt-7 block text-sm font-semibold text-slate-100" htmlFor="minecraftName">
-                  Minecraft naam
+              <ol className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {[
+                  { n: 1, label: 'Naam' },
+                  { n: 2, label: 'Discord' },
+                  { n: 3, label: 'Code' },
+                  { n: 4, label: '/link' },
+                ].map((step) => (
+                  <li
+                    key={step.n}
+                    className="flex items-center gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-2.5 py-2"
+                  >
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-venox-500/20 text-[11px] font-bold text-venox-200 ring-1 ring-venox-400/30">
+                      {step.n}
+                    </span>
+                    <span className="truncate text-xs font-semibold text-slate-300">
+                      {step.label}
+                    </span>
+                  </li>
+                ))}
+              </ol>
+
+              <form onSubmit={startDiscordLogin} className="mt-6">
+                <label
+                  className="block text-xs font-semibold uppercase tracking-wider text-slate-400"
+                  htmlFor="minecraftName"
+                >
+                  Minecraft gebruikersnaam
                 </label>
-                <input
-                  className="mt-2 w-full rounded-md border border-white/10 bg-slate-950/80 px-4 py-4 text-white outline-none transition placeholder:text-slate-500 focus:border-venox-300 focus:ring-2 focus:ring-venox-300/30"
-                  id="minecraftName"
-                  maxLength={16}
-                  minLength={3}
-                  onChange={(event) => {
-                    setMinecraftName(event.target.value);
-                    setError('');
-                  }}
-                  placeholder="Bijvoorbeeld TheBathDuck"
-                  value={minecraftName}
-                />
+                <div className="relative mt-2">
+                  <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-slate-500">
+                    <MinecraftBlockIcon className="h-4 w-4" />
+                  </span>
+                  <input
+                    className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-4 pl-11 pr-24 text-white outline-none transition placeholder:text-slate-500 focus:border-venox-400 focus:bg-black/60 focus:ring-4 focus:ring-venox-500/20"
+                    id="minecraftName"
+                    maxLength={16}
+                    minLength={3}
+                    onChange={(event) => {
+                      setMinecraftName(event.target.value);
+                      setError('');
+                    }}
+                    placeholder="Bijvoorbeeld TheBathDuck"
+                    value={minecraftName}
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                  <span
+                    className={`absolute inset-y-0 right-3 flex items-center text-[11px] font-semibold ${
+                      isNameValid ? 'text-emerald-300' : 'text-slate-500'
+                    }`}
+                  >
+                    {isNameValid ? 'Geldig' : `${previewName.length}/16`}
+                  </span>
+                </div>
 
                 {error ? (
-                  <p className="mt-3 rounded-md border border-red-400/30 bg-red-500/10 px-3 py-2 text-sm text-red-100">
-                    {error}
+                  <p className="mt-3 flex items-start gap-2 rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-2 text-sm text-red-100">
+                    <XMarkIcon className="mt-0.5 h-4 w-4 shrink-0 text-red-300" />
+                    <span>{error}</span>
                   </p>
                 ) : (
-                  <p className="mt-3 text-sm text-slate-400">
+                  <p className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                    <ShieldCheckIcon className="h-4 w-4 text-venox-400" />
                     Gebruik je username waarmee je bent ingelogd op de server.
                   </p>
                 )}
 
                 <button
-                  className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-venox-500 px-5 py-4 font-bold text-white transition hover:bg-venox-400 focus:outline-none focus:ring-2 focus:ring-venox-200 disabled:cursor-not-allowed disabled:bg-slate-600"
-                  disabled={status !== 'idle'}
+                  className="group relative mt-6 inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-venox-500 via-venox-400 to-[#5865F2] px-5 py-4 font-bold text-white shadow-[0_12px_30px_-8px_rgba(7,152,242,0.5)] transition hover:shadow-[0_16px_40px_-10px_rgba(7,152,242,0.65)] focus:outline-none focus:ring-2 focus:ring-venox-200 disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
+                  disabled={isBusy}
                   type="submit"
                 >
-                  <LinkIcon className="h-5 w-5" />
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  {isBusy ? (
+                    <ArrowPathIcon className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <LinkIcon className="h-5 w-5" />
+                  )}
                   {status === 'resolving'
                     ? 'Minecraft controleren...'
                     : status === 'authenticating'
@@ -513,130 +573,168 @@ function App() {
                       : 'Link met Discord'}
                 </button>
 
-                <div className="my-5 flex items-center gap-4 text-sm font-semibold uppercase tracking-normal text-slate-500">
+                <div className="my-5 flex items-center gap-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                   <span className="h-px flex-1 bg-white/10" />
                   Of
                   <span className="h-px flex-1 bg-white/10" />
                 </div>
 
                 <a
-                  className="inline-flex w-full items-center justify-center gap-3 rounded-md bg-[#5865F2] px-5 py-4 font-bold text-white transition hover:bg-[#4752C4] focus:outline-none focus:ring-2 focus:ring-[#B5BDFF]"
+                  className="inline-flex w-full items-center justify-center gap-3 rounded-xl border border-[#5865F2]/30 bg-[#5865F2]/10 px-5 py-3.5 font-bold text-white transition hover:border-[#5865F2]/60 hover:bg-[#5865F2]/20 focus:outline-none focus:ring-2 focus:ring-[#B5BDFF]"
                   href={DISCORD_INVITE_URL}
                   rel="noreferrer"
                   target="_blank"
                 >
-                  <DiscordIcon className="h-5 w-5" />
+                  <DiscordIcon className="h-5 w-5 text-[#b5bdff]" />
                   Join onze Discord server
                 </a>
-
-            </form>
+              </form>
+            </div>
           </div>
-        </div>
 
-        {linkResult && !isExpired ? (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-5 py-8 backdrop-blur-sm">
-            <div className="w-full max-w-xl rounded-lg border border-venox-300/35 bg-[#0c111d] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.55)] md:p-7">
-              <div className="flex items-center gap-4">
+          <footer className="mt-6 text-center text-xs text-slate-500">
+            Made with <span className="text-red-400">&#10084;</span> by{' '}
+            <a
+              className="font-semibold text-slate-300 transition hover:text-white"
+              href={GITHUB_URL}
+              rel="noreferrer"
+              target="_blank"
+            >
+              Sundeep
+            </a>
+          </footer>
+        </section>
+      </div>
+
+      {linkResult && !isExpired ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-5 py-8 backdrop-blur-md">
+          <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-[#0b0e15] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.7)] sm:p-8">
+            <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/60 to-transparent" />
+            <div className="pointer-events-none absolute -left-16 -top-16 h-40 w-40 rounded-full bg-emerald-400/20 blur-3xl" />
+            <div className="pointer-events-none absolute -right-16 -bottom-16 h-40 w-40 rounded-full bg-venox-500/20 blur-3xl" />
+
+            <div className="relative flex items-center gap-4">
+              <div className="relative">
+                <div className="absolute -inset-1 rounded-xl bg-emerald-400/40 blur-md" />
                 <img
-                  className="h-16 w-16 rounded-md border border-white/10 bg-slate-950 object-cover shadow-[0_10px_24px_rgba(0,0,0,0.28)]"
+                  className="relative h-16 w-16 rounded-xl border border-white/15 bg-slate-950 object-cover shadow-[0_10px_24px_rgba(0,0,0,0.35)]"
                   src={linkedHeadUrl}
                   alt={`${linkResult.minecraftName} Minecraft head`}
                 />
-                <div>
-                  <p className="text-sm font-semibold uppercase tracking-normal text-venox-200">
-                    Code klaar
-                  </p>
-                  <h2 className="mt-1 text-2xl font-bold text-white">{linkResult.minecraftName}</h2>
-                  <p className="text-sm text-slate-300">Discord: {linkResult.discordTag}</p>
+                <span className="absolute -bottom-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full border-2 border-[#0b0e15] bg-emerald-400">
+                  <CheckCircleIcon className="h-3.5 w-3.5 text-[#0b0e15]" />
+                </span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
+                  Code klaar
+                </p>
+                <h2 className="mt-1.5 truncate text-2xl font-extrabold text-white">
+                  {linkResult.minecraftName}
+                </h2>
+                <p className="truncate text-sm text-slate-400">
+                  Discord:{' '}
+                  <span className="font-semibold text-slate-200">{linkResult.discordTag}</span>
+                </p>
+              </div>
+            </div>
+
+            <div className="relative mt-6 rounded-xl border border-white/10 bg-black/40 p-4 text-sm leading-6 text-slate-300">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Join de VenoxMC server
+              </p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <div className="rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2">
+                  <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    IP
+                  </span>
+                  <span className="font-mono font-bold text-white">play.venoxmc.com</span>
+                </div>
+                <div className="rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2">
+                  <span className="block text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    Versie
+                  </span>
+                  <span className="font-mono font-bold text-white">26.1.2</span>
                 </div>
               </div>
+            </div>
 
-              <div className="mt-6 rounded-md border border-white/10 bg-black/25 p-4 text-sm leading-6 text-slate-300">
-                Join de VenoxMC server:
-                <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                  <div className="rounded-md bg-slate-950 px-3 py-2">
-                    <span className="block text-xs font-semibold uppercase tracking-normal text-slate-500">IP</span>
-                    <span className="font-mono font-bold text-white">play.venoxmc.com</span>
-                  </div>
-                  <div className="rounded-md bg-slate-950 px-3 py-2">
-                    <span className="block text-xs font-semibold uppercase tracking-normal text-slate-500">Versie</span>
-                    <span className="font-mono font-bold text-white">26.1.2</span>
-                  </div>
+            <div className="relative mt-5 overflow-hidden rounded-xl border border-venox-400/30 bg-gradient-to-br from-venox-500/10 via-slate-950/60 to-[#5865F2]/10 p-5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-venox-200">
+                Gebruik deze command op de server
+              </p>
+              <div className="mt-3 flex items-stretch overflow-hidden rounded-lg border border-white/10 bg-black/50">
+                <div className="min-w-0 flex-1 truncate px-4 py-4 text-center font-mono text-xl font-extrabold tracking-wide text-white sm:text-2xl">
+                  <span className="text-venox-300">/link</span> {linkResult.code}
                 </div>
-              </div>
-
-              <div className="mt-5 rounded-md border border-venox-300/30 bg-slate-950/70 p-5">
-                <p className="text-sm font-semibold text-slate-300">Gebruik deze command op de server</p>
-                <div className="mt-3 flex items-stretch rounded-md border border-white/10 bg-black/30">
-                  <div className="min-w-0 flex-1 px-4 py-4 text-center font-mono text-2xl font-extrabold tracking-normal text-venox-100">
-                    /link {linkResult.code}
-                  </div>
-                  <button
-                    className="inline-flex w-14 shrink-0 items-center justify-center border-l border-white/10 text-slate-300 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-venox-200"
-                    aria-label={copied ? 'Command gekopieerd' : 'Kopieer command'}
-                    type="button"
-                    onClick={copyCode}
-                  >
+                <button
+                  className="inline-flex w-14 shrink-0 items-center justify-center border-l border-white/10 text-slate-300 transition hover:bg-venox-500/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-venox-300"
+                  aria-label={copied ? 'Command gekopieerd' : 'Kopieer command'}
+                  type="button"
+                  onClick={copyCode}
+                >
+                  {copied ? (
+                    <CheckCircleIcon className="h-5 w-5 text-emerald-300" />
+                  ) : (
                     <ClipboardDocumentIcon className="h-5 w-5" />
-                  </button>
-                </div>
-                <p className="mt-2 text-right text-xs font-semibold text-slate-400">
-                  {copied ? 'Command gekopieerd' : 'Klik op het icoon om te kopieren'}
+                  )}
+                </button>
+              </div>
+              <div className="mt-3 flex items-center justify-between text-xs">
+                <p className="flex items-center gap-1.5 text-slate-400">
+                  <ClockIcon className="h-4 w-4 text-venox-300" />
+                  Verloopt over{' '}
+                  <span className="font-mono font-bold text-white">{formatTimeLeft(timeLeft)}</span>
                 </p>
-                <p className="mt-4 flex items-center gap-2 text-sm text-slate-300">
-                  <ClockIcon className="h-5 w-5 text-venox-300" />
-                  Verloopt over {formatTimeLeft(timeLeft)}
+                <p
+                  className={`font-semibold transition ${
+                    copied ? 'text-emerald-300' : 'text-slate-500'
+                  }`}
+                >
+                  {copied ? 'Gekopieerd!' : 'Klik op het icoon'}
                 </p>
               </div>
-
-              <button
-                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md border border-white/15 px-5 py-3 font-semibold text-slate-100 transition hover:border-venox-300 hover:text-white"
-                type="button"
-                onClick={resetFlow}
-              >
-                <ArrowPathIcon className="h-5 w-5" />
-                Sluit en maak nieuwe code
-              </button>
             </div>
+
+            <button
+              className="relative mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-3 font-semibold text-slate-200 transition hover:border-venox-300/50 hover:bg-white/[0.06] hover:text-white"
+              type="button"
+              onClick={resetFlow}
+            >
+              <ArrowPathIcon className="h-5 w-5" />
+              Sluit en maak nieuwe code
+            </button>
           </div>
-        ) : null}
+        </div>
+      ) : null}
 
-        <footer className="absolute bottom-5 left-0 right-0 px-5 text-center text-sm text-slate-500">
-          Made with <span className="text-red-400">❤</span> by{' '}
-          <a
-            className="font-semibold text-slate-300 transition hover:text-white"
-            href={GITHUB_URL}
-            rel="noreferrer"
-            target="_blank"
-          >
-            Sundeep
-          </a>
-        </footer>
-
-        {showCookiePopup ? (
-          <div
-            className={`cookie-popup fixed bottom-5 right-5 z-50 w-[calc(100%-2.5rem)] max-w-md rounded-lg border border-white/10 bg-[#111827]/70 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.45)] backdrop-blur-md ${
-              isCookieLeaving ? 'cookie-popup-leave' : ''
-            }`}
-          >
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <div className="flex-1">
-                <p className="font-bold text-white">Cookies</p>
-                <p className="mt-1 text-sm leading-6 text-slate-300">
-                  We bewaren je keuze zodat deze melding niet steeds opnieuw verschijnt.
-                </p>
-              </div>
-              <button
-                className="rounded-md bg-venox-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-venox-400 focus:outline-none focus:ring-2 focus:ring-venox-200"
-                type="button"
-                onClick={acceptCookies}
-              >
-                Accepteren
-              </button>
+      {showCookiePopup ? (
+        <div
+          className={`cookie-popup fixed bottom-5 right-5 z-50 w-[calc(100%-2.5rem)] max-w-md rounded-xl border border-white/10 bg-[#0b0e15]/85 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.55)] backdrop-blur-xl ${
+            isCookieLeaving ? 'cookie-popup-leave' : ''
+          }`}
+        >
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex-1">
+              <p className="flex items-center gap-2 font-bold text-white">
+                <SparklesIcon className="h-4 w-4 text-venox-300" />
+                Cookies
+              </p>
+              <p className="mt-1 text-sm leading-6 text-slate-300">
+                We bewaren je keuze zodat deze melding niet steeds opnieuw verschijnt.
+              </p>
             </div>
+            <button
+              className="rounded-lg bg-gradient-to-r from-venox-500 to-venox-400 px-5 py-2.5 text-sm font-bold text-white shadow-[0_8px_20px_-6px_rgba(7,152,242,0.5)] transition hover:shadow-[0_12px_28px_-8px_rgba(7,152,242,0.65)] focus:outline-none focus:ring-2 focus:ring-venox-200"
+              type="button"
+              onClick={acceptCookies}
+            >
+              Accepteren
+            </button>
           </div>
-        ) : null}
-      </section>
+        </div>
+      ) : null}
     </main>
   );
 }

@@ -8,14 +8,15 @@
 
 html {
   min-height: 100%;
-  background: #08111f;
+  background: #07090f;
 }
 
 body {
   min-height: 100%;
   margin: 0;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  background: #101114;
+  background: #07090f;
+  color: #e2e8f0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -25,27 +26,95 @@ input {
   font: inherit;
 }
 
-.water-drop {
-  animation-name: water-drip;
-  animation-timing-function: cubic-bezier(0.28, 0, 0.18, 1);
-  animation-iteration-count: infinite;
-  transform: translateY(-6rem);
+::selection {
+  background: rgba(7, 152, 242, 0.35);
+  color: #ffffff;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.aurora-blob-1 {
+  top: -10%;
+  left: -10%;
+  width: 45rem;
+  height: 45rem;
+  background: radial-gradient(circle at 30% 30%, rgba(7, 152, 242, 0.55), transparent 60%);
+  animation: aurora-drift-1 22s ease-in-out infinite;
+}
+
+.aurora-blob-2 {
+  top: 20%;
+  right: -15%;
+  width: 40rem;
+  height: 40rem;
+  background: radial-gradient(circle at 70% 40%, rgba(88, 101, 242, 0.5), transparent 60%);
+  animation: aurora-drift-2 26s ease-in-out infinite;
+}
+
+.aurora-blob-3 {
+  bottom: -20%;
+  left: 20%;
+  width: 38rem;
+  height: 38rem;
+  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.28), transparent 60%);
+  animation: aurora-drift-3 30s ease-in-out infinite;
+}
+
+@keyframes aurora-drift-1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(6rem, 4rem, 0) scale(1.1);
+  }
+}
+
+@keyframes aurora-drift-2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-5rem, 3rem, 0) scale(1.05);
+  }
+}
+
+@keyframes aurora-drift-3 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(3rem, -3rem, 0) scale(1.08);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.6;
+  }
 }
 
 .cookie-popup {
-  animation: cookie-pop-in 220ms ease-out both;
+  animation: cookie-pop-in 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .cookie-popup-leave {
-  animation: cookie-pop-out 200ms ease-in both;
+  animation: cookie-pop-out 220ms ease-in both;
 }
 
 @keyframes cookie-pop-in {
   from {
     opacity: 0;
-    transform: translateY(0.75rem) scale(0.98);
+    transform: translateY(1rem) scale(0.96);
   }
-
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -57,37 +126,15 @@ input {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
-
   to {
     opacity: 0;
     transform: translateY(0.75rem) scale(0.98);
   }
 }
 
-@keyframes water-drip {
-  0% {
-    opacity: 0;
-    transform: translateY(-6rem);
-  }
-
-  8% {
-    opacity: 0.9;
-  }
-
-  70% {
-    opacity: 0.6;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(calc(100vh + 10rem));
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .water-drop {
+  .aurora-blob {
     animation: none;
-    opacity: 0;
   }
 
   .cookie-popup,
