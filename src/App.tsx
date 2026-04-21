@@ -17,7 +17,6 @@ const GITHUB_URL = 'http://github.com/sundeep2005/';
 
 const PENDING_KEY = 'venoxmc-link-pending';
 const RESULT_KEY = 'venoxmc-link-result';
-const CODE_TTL_MS = 5 * 60 * 1000;
 const MINECRAFT_NAME_PATTERN = /^[a-zA-Z0-9_]{3,16}$/;
 const DEFAULT_MINECRAFT_NAME = 'Steve';
 const DEFAULT_MINECRAFT_UUID = '8667ba71b85a4004af54457a9734eed7';
@@ -41,12 +40,6 @@ type PlayerDbResponse = {
   };
 };
 
-type DiscordUser = {
-  id: string;
-  username: string;
-  global_name?: string | null;
-};
-
 type LinkResult = {
   code: string;
   expiresAt: number;
@@ -62,6 +55,15 @@ type PendingLink = {
   state: string;
   createdAt: number;
 };
+
+type CreateLinkResponse =
+  | (LinkResult & {
+      success: true;
+    })
+  | {
+      success: false;
+      error?: string;
+    };
 
 function isLinkResult(value: Partial<LinkResult> | null): value is LinkResult {
   return Boolean(
@@ -95,16 +97,6 @@ async function resolveMinecraftProfile(name: string): Promise<MinecraftProfile> 
     name: player.username || name,
     uuid: player.raw_id,
   };
-}
-
-function createRandomCode() {
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const randomValues = new Uint32Array(4);
-  crypto.getRandomValues(randomValues);
-
-  return `VMC-${Array.from(randomValues)
-    .map((value) => alphabet[value % alphabet.length])
-    .join('')}`;
 }
 
 function createStateToken() {
@@ -189,6 +181,30 @@ function deleteCookie(name: string) {
 
 function shouldResetCookies() {
   return new URLSearchParams(window.location.search).has(COOKIE_RESET_PARAM);
+}
+
+async function createLinkCode(
+  accessToken: string,
+  pending: PendingLink
+): Promise<LinkResult> {
+  const response = await fetch('/api/link/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      accessToken,
+      minecraftName: pending.minecraftName,
+      minecraftUuid: pending.minecraftUuid,
+    }),
+  });
+
+  const data = (await response.json()) as CreateLinkResponse;
+  if (!response.ok || !data.success) {
+    throw new Error(data.success ? 'Linkcode kon niet worden aangemaakt.' : data.error || 'Linkcode kon niet worden aangemaakt.');
+  }
+
+  return data;
 }
 
 function App() {
@@ -303,36 +319,18 @@ function App() {
 
     const activePending = pending;
 
-    fetch('https://discord.com/api/users/@me', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Discord profiel kon niet worden opgehaald.');
-        }
-        return response.json();
-      })
-      .then((discordUser: DiscordUser) => {
-        const result = {
-          code: createRandomCode(),
-          expiresAt: Date.now() + CODE_TTL_MS,
-          minecraftName: activePending.minecraftName,
-          minecraftUuid: activePending.minecraftUuid || DEFAULT_MINECRAFT_UUID,
-          discordTag: discordUser.global_name || discordUser.username,
-          discordId: discordUser.id,
-        };
-
+    createLinkCode(accessToken, activePending)
+      .then((result) => {
         localStorage.setItem(RESULT_KEY, JSON.stringify(result));
         localStorage.removeItem(PENDING_KEY);
-        setMinecraftName(activePending.minecraftName);
+        setMinecraftName(result.minecraftName);
+        setMinecraftUuid(result.minecraftUuid || DEFAULT_MINECRAFT_UUID);
         setLinkResult(result);
         setError('');
         setStatus('complete');
       })
-      .catch(() => {
-        setError('Discord authenticatie is niet gelukt. Probeer opnieuw.');
+      .catch((requestError) => {
+        setError(requestError instanceof Error ? requestError.message : 'Discord authenticatie is niet gelukt. Probeer opnieuw.');
         setStatus('idle');
       });
   }, []);
