@@ -20,6 +20,9 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Bungee', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        marker: ['"Permanent Marker"', 'Bungee', 'ui-sans-serif', 'sans-serif'],
+        pixel: ['VT323', 'ui-monospace', 'monospace'],
       },
     },
   },

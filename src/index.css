@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,15 +10,15 @@
 
 html {
   min-height: 100%;
-  background: #07090f;
+  background: #09111d;
 }
 
 body {
   min-height: 100%;
   margin: 0;
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  background: #07090f;
-  color: #e2e8f0;
+  background: #09111d;
+  color: #d8e7f5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -26,95 +28,254 @@ input {
   font: inherit;
 }
 
-::selection {
-  background: rgba(7, 152, 242, 0.35);
-  color: #ffffff;
+img {
+  display: block;
 }
 
-.aurora-blob {
+.graffiti-title {
+  letter-spacing: 0;
+  text-shadow:
+    0 3px 0 rgba(6, 11, 20, 0.8),
+    4px 4px 0 #0f4674,
+    9px 9px 0 rgba(7, 152, 242, 0.16);
+}
+
+.link-panel {
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(15, 24, 39, 0.96), rgba(9, 17, 29, 0.96));
+  box-shadow:
+    0 28px 60px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: 24px;
+}
+
+.duck-input {
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  background: #07101d;
+  color: #fff;
+  padding: 16px 18px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.duck-input::placeholder {
+  color: #7295b6;
+}
+
+.duck-input:focus {
+  border-color: #32b0fe;
+  box-shadow: 0 0 0 4px rgba(50, 176, 254, 0.18);
+  outline: none;
+}
+
+.duck-button,
+.duck-discord,
+.duck-ghost {
+  min-height: 56px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.duck-button {
+  border: 2px solid #0560aa;
+  background: linear-gradient(180deg, #78cbff, #0798f2 58%, #0560aa 100%);
+  color: #fff;
+  box-shadow:
+    0 8px 0 #0560aa,
+    0 18px 28px rgba(7, 152, 242, 0.22);
+}
+
+.duck-button:hover {
+  background: linear-gradient(180deg, #9addff, #32b0fe 58%, #0798f2 100%);
+}
+
+.duck-button:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 4px 0 #0560aa,
+    0 10px 18px rgba(7, 152, 242, 0.2);
+}
+
+.duck-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: 0 6px 0 #0560aa;
+}
+
+.duck-discord {
+  border: 2px solid #4338ca;
+  background: linear-gradient(180deg, #818cf8, #6366f1 58%, #4f46e5 100%);
+  color: white;
+  box-shadow:
+    0 8px 0 #4338ca,
+    0 18px 28px rgba(79, 70, 229, 0.2);
+}
+
+.duck-discord:hover {
+  background: linear-gradient(180deg, #9ca3ff, #7c83ff 58%, #6366f1 100%);
+}
+
+.duck-discord:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 4px 0 #4338ca,
+    0 10px 18px rgba(79, 70, 229, 0.18);
+}
+
+.duck-ghost {
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: #0f1b2d;
+  color: #fff;
+  padding: 0 20px;
+  box-shadow: 0 8px 0 rgba(255, 255, 255, 0.08);
+}
+
+.duck-ghost:hover {
+  background: #13233a;
+}
+
+.duck-ghost:active {
+  transform: translateY(4px);
+  box-shadow: 0 4px 0 rgba(255, 255, 255, 0.08);
+}
+
+.duck-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 21, 35, 0.92);
+  color: #7ea8cb;
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.16);
+}
+
+.duck-step-active {
+  border-color: #32b0fe;
+  background: linear-gradient(180deg, #16304a, #0f4674);
+  color: white;
+}
+
+.duck-step-done {
+  border-color: #32b0fe;
+  background: linear-gradient(180deg, #1d496d, #0798f2);
+  color: white;
+}
+
+.duck-step-line {
+  display: inline-block;
+  width: 26px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(126, 168, 203, 0.14) 0%,
+    rgba(126, 168, 203, 0.55) 20%,
+    rgba(126, 168, 203, 0.55) 80%,
+    rgba(126, 168, 203, 0.14) 100%
+  );
+  box-shadow: 0 0 10px rgba(50, 176, 254, 0.12);
+}
+
+.spray-card {
+  position: relative;
+  min-height: 120px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 21, 35, 0.72);
+  padding: 16px;
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.16);
+}
+
+.spray-card p {
+  margin: 36px 0 0;
+  color: #c4d9ec;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+.spray-card-number {
   position: absolute;
-  border-radius: 9999px;
-  filter: blur(90px);
-  opacity: 0.55;
-  will-change: transform;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #78cbff, #0798f2);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 900;
+  box-shadow: 0 4px 0 #0560aa;
 }
 
-.aurora-blob-1 {
-  top: -10%;
-  left: -10%;
-  width: 45rem;
-  height: 45rem;
-  background: radial-gradient(circle at 30% 30%, rgba(7, 152, 242, 0.55), transparent 60%);
-  animation: aurora-drift-1 22s ease-in-out infinite;
+.pixel-cube {
+  position: relative;
+  width: 64px;
+  height: 64px;
 }
 
-.aurora-blob-2 {
-  top: 20%;
-  right: -15%;
-  width: 40rem;
-  height: 40rem;
-  background: radial-gradient(circle at 70% 40%, rgba(88, 101, 242, 0.5), transparent 60%);
-  animation: aurora-drift-2 26s ease-in-out infinite;
+.pixel-cube-top,
+.pixel-cube-left,
+.pixel-cube-right {
+  position: absolute;
+  display: block;
 }
 
-.aurora-blob-3 {
-  bottom: -20%;
-  left: 20%;
-  width: 38rem;
-  height: 38rem;
-  background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.28), transparent 60%);
-  animation: aurora-drift-3 30s ease-in-out infinite;
+.pixel-cube-top {
+  top: 0;
+  left: 10px;
+  width: 44px;
+  height: 22px;
+  background: linear-gradient(180deg, #b8e3ff, #32b0fe);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
 
-@keyframes aurora-drift-1 {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(6rem, 4rem, 0) scale(1.1);
-  }
+.pixel-cube-left {
+  top: 21px;
+  left: 0;
+  width: 32px;
+  height: 34px;
+  background: linear-gradient(180deg, #0798f2, #0560aa);
+  clip-path: polygon(100% 0, 0 30%, 0 100%, 100% 70%);
 }
 
-@keyframes aurora-drift-2 {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(-5rem, 3rem, 0) scale(1.05);
-  }
-}
-
-@keyframes aurora-drift-3 {
-  0%, 100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(3rem, -3rem, 0) scale(1.08);
-  }
-}
-
-@keyframes twinkle {
-  0%, 100% {
-    opacity: 0.25;
-  }
-  50% {
-    opacity: 0.6;
-  }
+.pixel-cube-right {
+  top: 21px;
+  right: 0;
+  width: 32px;
+  height: 34px;
+  background: linear-gradient(180deg, #32b0fe, #0f4674);
+  clip-path: polygon(0 0, 100% 30%, 100% 100%, 0 70%);
 }
 
 .cookie-popup {
-  animation: cookie-pop-in 280ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: cookie-pop-in 220ms ease-out both;
 }
 
 .cookie-popup-leave {
-  animation: cookie-pop-out 220ms ease-in both;
+  animation: cookie-pop-out 200ms ease-in both;
 }
 
 @keyframes cookie-pop-in {
   from {
     opacity: 0;
-    transform: translateY(1rem) scale(0.96);
+    transform: translateY(0.75rem) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -126,17 +287,31 @@ input {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+
   to {
     opacity: 0;
     transform: translateY(0.75rem) scale(0.98);
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .aurora-blob {
-    animation: none;
+@media (max-width: 640px) {
+  .link-panel {
+    padding: 18px;
   }
 
+  .graffiti-title {
+    text-shadow:
+      0 3px 0 rgba(6, 11, 20, 0.8),
+      4px 4px 0 #0f4674,
+      7px 7px 0 rgba(7, 152, 242, 0.14);
+  }
+
+  .duck-step-line {
+    width: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
   .cookie-popup,
   .cookie-popup-leave {
     animation: none;
