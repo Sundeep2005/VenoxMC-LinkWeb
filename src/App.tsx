@@ -24,6 +24,7 @@ const COOKIE_NAME = 'VenoxmcLinking';
 const COOKIE_RESET_PARAM = 'resetCookies';
 
 type Status = 'idle' | 'resolving' | 'authenticating' | 'complete';
+type LinkCheckStatus = 'idle' | 'checking' | 'linked' | 'available' | 'error';
 
 type MinecraftProfile = {
   name: string;
@@ -60,6 +61,16 @@ type CreateLinkResponse =
   | (LinkResult & {
       success: true;
     })
+  | {
+      success: false;
+      error?: string;
+    };
+
+type LinkStatusResponse =
+  | {
+      success: true;
+      linked: boolean;
+    }
   | {
       success: false;
       error?: string;
@@ -207,6 +218,19 @@ async function createLinkCode(
   return data;
 }
 
+async function fetchLinkStatus(profile: MinecraftProfile): Promise<boolean> {
+  const params = new URLSearchParams({
+    minecraftName: profile.name,
+    minecraftUuid: profile.uuid,
+  });
+  const response = await fetch(`/api/minecraft/link/status?${params.toString()}`);
+  const data = (await response.json()) as LinkStatusResponse;
+  if (!response.ok || !data.success) {
+    throw new Error(data.success ? 'Linkstatus kon niet worden gecontroleerd.' : data.error || 'Linkstatus kon niet worden gecontroleerd.');
+  }
+  return data.linked;
+}
+
 function App() {
   const [minecraftName, setMinecraftName] = useState('');
   const [error, setError] = useState('');
@@ -215,6 +239,7 @@ function App() {
   const [now, setNow] = useState(Date.now());
   const [copied, setCopied] = useState(false);
   const [minecraftUuid, setMinecraftUuid] = useState(DEFAULT_MINECRAFT_UUID);
+  const [linkCheckStatus, setLinkCheckStatus] = useState<LinkCheckStatus>('idle');
   const [showCookiePopup, setShowCookiePopup] = useState(() => {
     if (shouldResetCookies()) {
       deleteCookie(COOKIE_NAME);
@@ -258,6 +283,7 @@ function App() {
     const cleanName = minecraftName.trim();
     if (!MINECRAFT_NAME_PATTERN.test(cleanName)) {
       setMinecraftUuid(DEFAULT_MINECRAFT_UUID);
+      setLinkCheckStatus('idle');
       return undefined;
     }
 
@@ -271,11 +297,24 @@ function App() {
           const uuid = data?.data?.player?.raw_id;
           if (uuid) {
             setMinecraftUuid(uuid);
+            setLinkCheckStatus('checking');
+            fetchLinkStatus({ name: data?.data?.player?.username || cleanName, uuid })
+              .then((linked) => {
+                if (!controller.signal.aborted) {
+                  setLinkCheckStatus(linked ? 'linked' : 'available');
+                }
+              })
+              .catch(() => {
+                if (!controller.signal.aborted) {
+                  setLinkCheckStatus('error');
+                }
+              });
           }
         })
         .catch(() => {
           if (!controller.signal.aborted) {
             setMinecraftUuid(DEFAULT_MINECRAFT_UUID);
+            setLinkCheckStatus('idle');
           }
         });
     }, 350);
@@ -361,6 +400,21 @@ function App() {
       return;
     }
 
+    try {
+      const linked = await fetchLinkStatus(profile);
+      setLinkCheckStatus(linked ? 'linked' : 'available');
+      if (linked) {
+        setStatus('idle');
+        setError('Dit Minecraft account is al gelinkt.');
+        return;
+      }
+    } catch {
+      setStatus('idle');
+      setError('Kon niet controleren of dit account al gelinkt is. Probeer opnieuw.');
+      setLinkCheckStatus('error');
+      return;
+    }
+
     const state = createStateToken();
     localStorage.setItem(
       PENDING_KEY,
@@ -398,7 +452,7 @@ function App() {
       return;
     }
 
-    navigator.clipboard.writeText(`/link ${linkResult.code}`).then(() => {
+    navigator.clipboard.writeText(`/discord link ${linkResult.code}`).then(() => {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1800);
     });
@@ -417,7 +471,7 @@ function App() {
     { n: 1, label: 'Naam' },
     { n: 2, label: 'Discord' },
     { n: 3, label: 'Code' },
-    { n: 4, label: '/link' },
+    { n: 4, label: '/discord link' },
   ];
 
   const activeStep =
@@ -474,7 +528,7 @@ function App() {
                 </div>
                 <div className="spray-card">
                   <span className="spray-card-number">3</span>
-                  <p>Gebruik daarna je <code>/link</code> code.</p>
+                  <p>Gebruik daarna je <code>/discord link</code> code.</p>
                 </div>
               </div>
             </div>
@@ -507,6 +561,7 @@ function App() {
                   onChange={(event) => {
                     setMinecraftName(event.target.value);
                     setError('');
+                    setLinkCheckStatus('idle');
                   }}
                   placeholder="Bijvoorbeeld TheBathDuck"
                   value={minecraftName}
@@ -516,6 +571,18 @@ function App() {
                   <p className="mt-3 rounded-md border-2 border-[#ef4444]/35 bg-[#fff1ef] px-3 py-2 text-sm font-semibold text-[#9f1239]">
                     {error}
                   </p>
+                ) : linkCheckStatus === 'linked' ? (
+                  <p className="mt-3 rounded-md border-2 border-[#f59e0b]/35 bg-[#fff7ed] px-3 py-2 text-sm font-semibold text-[#9a3412]">
+                    Dit Minecraft account is al gelinkt.
+                  </p>
+                ) : linkCheckStatus === 'checking' ? (
+                  <p className="mt-3 text-sm font-medium leading-6 text-[#a8c5df]">
+                    We controleren of dit account al gelinkt is...
+                  </p>
+                ) : linkCheckStatus === 'available' ? (
+                  <p className="mt-3 text-sm font-medium leading-6 text-[#a8c5df]">
+                    Account gevonden en nog niet gelinkt.
+                  </p>
                 ) : (
                   <p className="mt-3 text-sm font-medium leading-6 text-[#a8c5df]">
                     Gebruik je username waarmee je bent ingelogd op de server.
@@ -524,7 +591,7 @@ function App() {
 
                 <button
                   className="duck-button mt-6 inline-flex w-full items-center justify-center gap-2"
-                  disabled={status !== 'idle'}
+                  disabled={status !== 'idle' || linkCheckStatus === 'checking' || linkCheckStatus === 'linked'}
                   type="submit"
                 >
                   <LinkIcon className="h-5 w-5" />
@@ -597,7 +664,7 @@ function App() {
                 <p className="text-sm font-black uppercase tracking-[0.18em] text-[#78cbff]">Gebruik deze command op de server</p>
                 <div className="mt-3 flex items-stretch overflow-hidden rounded-md border-2 border-white/10 bg-[#07101d]">
                   <div className="min-w-0 flex-1 px-4 py-4 text-center font-mono text-2xl font-black text-white sm:text-3xl">
-                    /link {linkResult.code}
+                    /discord link {linkResult.code}
                   </div>
                   <button
                     aria-label={copied ? 'Command gekopieerd' : 'Kopieer command'}

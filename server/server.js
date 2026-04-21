@@ -2,6 +2,7 @@ const fs = require('fs');
 const http = require('http');
 const path = require('path');
 const crypto = require('crypto');
+const mysql = require('mysql2/promise');
 
 const PORT = Number(process.env.PORT || 3001);
 const CODE_TTL_MS = Number(process.env.LINK_CODE_TTL_MS || 5 * 60 * 1000);
@@ -9,8 +10,30 @@ const STORE_FILE = process.env.LINK_STORE_FILE || path.join(__dirname, 'link-cod
 const STATIC_DIR = path.join(__dirname, '..', 'build');
 const API_AUTH_TOKEN = process.env.LINK_API_AUTH_TOKEN || '';
 const MINECRAFT_NAME_PATTERN = /^[a-zA-Z0-9_]{3,16}$/;
+const configuredLinkTable = process.env.LINK_DB_TABLE || 'venox_links';
+const LINK_TABLE = /^[a-zA-Z0-9_]+$/.test(configuredLinkTable) ? configuredLinkTable : 'venox_links';
 
 const codes = new Map();
+let dbPool = null;
+
+function createDbPool() {
+  const { LINK_DB_HOST, LINK_DB_PORT, LINK_DB_NAME, LINK_DB_USER, LINK_DB_PASSWORD } = process.env;
+  if (!LINK_DB_HOST || !LINK_DB_NAME || !LINK_DB_USER || !LINK_DB_PASSWORD) {
+    return null;
+  }
+
+  return mysql.createPool({
+    host: LINK_DB_HOST,
+    port: Number(LINK_DB_PORT || 3306),
+    user: LINK_DB_USER,
+    password: LINK_DB_PASSWORD,
+    database: LINK_DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 4,
+    namedPlaceholders: true,
+    ssl: process.env.LINK_DB_SSL === 'false' ? undefined : { rejectUnauthorized: false },
+  });
+}
 
 function loadStore() {
   try {
@@ -66,6 +89,33 @@ function createCode() {
 
 function normalizeUuid(uuid) {
   return String(uuid || '').replace(/-/g, '').toLowerCase();
+}
+
+function normalizeDbUuidExpression(columnName) {
+  return `LOWER(REPLACE(${columnName}, '-', ''))`;
+}
+
+async function findExistingLink({ minecraftUuid, minecraftName }) {
+  if (!dbPool) {
+    return null;
+  }
+
+  const uuid = normalizeUuid(minecraftUuid);
+  const name = String(minecraftName || '').trim();
+  if (!uuid && !name) {
+    return null;
+  }
+
+  const [rows] = await dbPool.execute(
+    `SELECT minecraft_uuid, minecraft_name, discord_id, discord_tag
+       FROM ${LINK_TABLE}
+      WHERE ${normalizeDbUuidExpression('minecraft_uuid')} = :uuid
+         OR LOWER(minecraft_name) = LOWER(:name)
+      LIMIT 1`,
+    { uuid, name }
+  );
+
+  return rows[0] || null;
 }
 
 function sendJson(res, statusCode, body) {
@@ -129,6 +179,12 @@ async function createLink(req, res) {
     return;
   }
 
+  const existingLink = await findExistingLink({ minecraftUuid, minecraftName });
+  if (existingLink) {
+    sendJson(res, 409, { success: false, error: 'Dit Minecraft account is al gelinkt.' });
+    return;
+  }
+
   const discordUser = await fetchDiscordUser(accessToken);
   pruneExpiredCodes();
 
@@ -162,6 +218,23 @@ async function createLink(req, res) {
     minecraftName,
     discordId: entry.discordId,
     discordTag,
+  });
+}
+
+async function getLinkStatus(req, res) {
+  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const minecraftUuid = normalizeUuid(url.searchParams.get('minecraftUuid'));
+  const minecraftName = (url.searchParams.get('minecraftName') || '').trim();
+
+  if (!minecraftUuid && !MINECRAFT_NAME_PATTERN.test(minecraftName)) {
+    sendJson(res, 400, { success: false, error: 'Ongeldige aanvraag.' });
+    return;
+  }
+
+  const existingLink = await findExistingLink({ minecraftUuid, minecraftName });
+  sendJson(res, 200, {
+    success: true,
+    linked: Boolean(existingLink),
   });
 }
 
@@ -227,6 +300,7 @@ function serveStatic(req, res) {
   });
 }
 
+dbPool = createDbPool();
 loadStore();
 setInterval(pruneExpiredCodes, 60 * 1000).unref();
 
@@ -241,6 +315,11 @@ const server = http.createServer(async (req, res) => {
 
     if (req.method === 'POST' && url.pathname === '/api/link/create') {
       await createLink(req, res);
+      return;
+    }
+
+    if (req.method === 'GET' && url.pathname === '/api/minecraft/link/status') {
+      await getLinkStatus(req, res);
       return;
     }
 
